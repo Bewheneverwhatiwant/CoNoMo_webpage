@@ -38,7 +38,7 @@ export default function Header() {
 
         <HeaderContainer>
             <CustomRow width='97%' justifyContent='space-between'>
-                <LogoButton>
+                <LogoButton onClick={Back}>
                     하이 코노모~
                 </LogoButton>
             </CustomRow>

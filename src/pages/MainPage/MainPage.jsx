@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
+import CustomColumn from '../../Components/Container/CustomColumn';
+import CustomRow from '../../Components/Container/CustomRow';
+import CustomFont from '../../Components/Container/CustomFont';
+import { useNavigate } from 'react-router-dom';
 
 const ContainerCenter = styled.div`
   display: flex;
@@ -23,72 +26,41 @@ const PageContainer = styled(ContainerCenter)`
   background-color: white;
 `;
 
-export default function BaekjoonProfile() {
-  const [userId, setUserId] = useState('');
-  const [profile, setProfile] = useState(null);
-  const [solved, setSolved] = useState([]);
-  const [levelCounts, setLevelCounts] = useState([]);
+const Button = styled.button`
+width: 30%;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 1rem;
+color: white;
+border: none;
+border-radius: 20px;
+background-color: #8CC63F;
+cursor: pointer;
+`;
 
-  const fetchProfile = async () => {
-    try {
-      const profileResponse = await axios.get(`https://solved.ac/api/v3/user/show?handle=${userId}`);
-      setProfile(profileResponse.data);
 
-      const solvedResponse = await axios.get(`https://solved.ac/api/v3/search/problem?query=solved_by%3A${userId}&sort=level&direction=desc`);
-      setSolved(solvedResponse.data.items);
+export default function Component() {
 
-      const levelCountsResponse = await axios.get(`https://solved.ac/api/v3/user/problem_stats?handle=${userId}`);
-      setLevelCounts(levelCountsResponse.data.filter(item => item.solved !== 0));
-    } catch (error) {
-      console.error('Failed to fetch data:', error);
-    }
-  };
+  const navigate = useNavigate();
+
+  const MoveSignup = () => {
+    navigate('/signuppage');
+  }
+
+  const MoveLogin = () => {
+    navigate('/loginpage');
+  }
 
   return (
     <ContainerCenter>
       <PageContainer>
-        <h1>사용자 프로필 불러오기</h1>
-        <input
-          type="text"
-          value={userId}
-          onChange={e => setUserId(e.target.value)}
-          placeholder="Enter user ID"
-        />
-        <button onClick={fetchProfile}>보기</button>
+        <CustomColumn width='100%' justifyContent='center' alignItems='center' gap='5rem'>
 
-        {profile && (
-          <div>
-            <h2>========{userId}님의 프로필========</h2>
-            <p>Rank: {profile.rank}</p>
-            <p>Tier: {profile.tier}</p>
-            <p>Solved Count: {profile.solvedCount}</p>
-            <p>Rating: {profile.rating}</p>
-            <p>Exp: {profile.exp}</p>
-          </div>
-        )}
-
-        {solved.length > 0 && (
-          <div>
-            <h2>========{userId}님이 푼 문제들({solved.length})========</h2>
-            <ul>
-              {solved.map(problem => (
-                <li key={problem.problemId}>{problem.titleKo} (Level: {problem.level})</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {levelCounts.length > 0 && (
-          <div>
-            <h2>========{userId}님이 푼 문제들의 레벨별 갯수========</h2>
-            <ul>
-              {levelCounts.map(item => (
-                <li key={item.level}>Level {item.level} - Total: {item.total}, Solved: {item.solved}</li>
-              ))}
-            </ul>
-          </div>
-        )}
+          <Button onClick={MoveLogin}>로그인</Button>
+          <Button onClick={MoveSignup}>회원가입</Button>
+        </CustomColumn>
       </PageContainer>
     </ContainerCenter>
   );
-}
+};
